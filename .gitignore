@@ -1,0 +1,17 @@
+# Editor / OS
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+.~lock.*#
+
+# Composer (not used yet, but reserve)
+vendor/
+composer.lock
+
+# Build artefacts — keep the plugin shippable as-is
+*.zip
+
+# Local WordPress test environments
+wp-config-local.php

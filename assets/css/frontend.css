@@ -1,0 +1,363 @@
+/*
+ * AI Website Assistant for Inkline Connect — frontend styles.
+ *
+ * Two surfaces share one visual language:
+ *  - .iaa-assist  — the in-page widget (shortcode + Elementor)
+ *  - .iaa-dock    — the site-wide docked bar
+ *
+ * All accents flow from --iaa-brand (set by the settings page) and
+ * --iaa-font (the configured font stack).
+ */
+
+:root {
+  --iaa-brand: #0057B8;
+  --iaa-brand-hover: #0057B8;
+  --iaa-font: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  /* Internal tokens. */
+  --iaa-bg: #ffffff;
+  --iaa-bg-soft: #FBFBF8;
+  --iaa-fg: #1f1f1c;
+  --iaa-fg-muted: #4f4f4a;
+  --iaa-fg-subtle: #8a8a82;
+  --iaa-border: #d8d6cf;
+  --iaa-border-strong: #babab0;
+  --iaa-radius-pill: 9999px;
+  --iaa-shadow-lift: 0 4px 14px rgba(20, 22, 18, 0.18), 0 20px 52px rgba(20, 22, 18, 0.36);
+}
+
+/* ---------------------------------------------------------------- */
+/* In-page assistant                                                 */
+/* ---------------------------------------------------------------- */
+
+.iaa-assist {
+  font-family: var(--iaa-font);
+  color: var(--iaa-fg);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background: var(--iaa-bg);
+  border: 1px solid var(--iaa-border);
+  border-radius: 18px;
+  padding: clamp(20px, 3.5vw, 36px);
+  box-sizing: border-box;
+}
+.iaa-assist--bare {
+  background: none;
+  border: 0;
+  padding: 0;
+}
+.iaa-assist--center { align-items: center; text-align: center; }
+.iaa-assist--center .iaa-assist__head { align-items: center; }
+.iaa-assist--center .iaa-assist__suggest {
+  flex-direction: column;
+  gap: 8px;
+}
+.iaa-assist--center .iaa-assist__chips { justify-content: center; }
+
+.iaa-assist__head {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 44rem;
+}
+.iaa-assist__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--iaa-font);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--iaa-brand);
+}
+.iaa-assist__eyebrow-glyph { font-size: 14px; line-height: 1; }
+.iaa-assist__title {
+  margin: 0;
+  font-family: var(--iaa-font);
+  font-weight: 600;
+  font-size: clamp(22px, 2.6vw, 30px);
+  line-height: 1.18;
+  color: var(--iaa-fg);
+}
+.iaa-assist__sub {
+  margin: 0;
+  font-size: 16px;
+  color: var(--iaa-fg-muted);
+  max-width: 40rem;
+}
+
+/* Conversational input bar — shared between the in-page and the dock. */
+.iaa-assist__bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  width: 100%;
+  max-width: 44rem;
+  background: var(--iaa-bg-soft);
+  border: 1.5px solid var(--iaa-border-strong);
+  border-radius: var(--iaa-radius-pill);
+  padding: 8px 8px 8px 18px;
+  box-sizing: border-box;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+.iaa-assist__bar:focus-within {
+  border-color: var(--iaa-brand);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--iaa-brand) 18%, transparent);
+}
+.iaa-assist__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--iaa-brand);
+  transition: opacity 0.2s ease;
+}
+.iaa-assist__input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  padding: 12px 0;
+  font-family: var(--iaa-font);
+  font-size: 16px;
+  color: var(--iaa-fg);
+  transition: opacity 0.2s ease;
+}
+.iaa-assist__input:focus { outline: none; }
+.iaa-assist__input::placeholder { color: var(--iaa-fg-subtle); }
+.iaa-assist__send {
+  position: relative;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--iaa-brand);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+.iaa-assist__send:hover,
+.iaa-assist__send:focus-visible {
+  background: color-mix(in srgb, var(--iaa-brand) 78%, #000 22%);
+  outline: none;
+}
+
+/* Suggestion chips. */
+.iaa-assist__suggest {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+.iaa-assist__suggest-label {
+  font-family: var(--iaa-font);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--iaa-fg-subtle);
+}
+.iaa-assist__chips {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.iaa-assist__chip {
+  font-family: var(--iaa-font);
+  font-size: 13px;
+  color: var(--iaa-fg);
+  background: #F3F0E9;
+  border: 1px solid var(--iaa-border);
+  border-radius: var(--iaa-radius-pill);
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+.iaa-assist__chip:hover {
+  background: color-mix(in srgb, var(--iaa-brand) 14%, #ffffff);
+  border-color: var(--iaa-brand);
+  color: var(--iaa-brand);
+}
+
+/* Hint nudge after a chip is picked. */
+@keyframes iaa-send-nudge {
+  0%, 58%, 100% { transform: translateX(0); }
+  70% { transform: translateX(-2px); }
+  82% { transform: translateX(4px); }
+  91% { transform: translateX(-1px); }
+}
+.iaa-assist__send.is-hinting svg {
+  animation: iaa-send-nudge 1.4s ease-in-out infinite;
+}
+
+/* ---------------------------------------------------------------- */
+/* Docked assistant                                                  */
+/* ---------------------------------------------------------------- */
+
+.iaa-dock {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2147483600; /* sit above most themes/widgets, below modals. */
+  display: flex;
+  justify-content: center;
+  /* Bottom padding tuned so the 58px send lands 20px off the bottom
+     edge, in line with the corner chat-widget button. */
+  padding: 16px 16px 11px;
+  pointer-events: none;
+  font-family: var(--iaa-font);
+  transform: translateY(140%);
+  transition: transform 440ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.iaa-dock--visible { transform: translateY(0); }
+
+.iaa-dock__shell {
+  position: relative;
+  width: min(40rem, 100%);
+  display: flex;
+  justify-content: center;
+}
+
+.iaa-dock__bar {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  height: 76px;
+  width: 100%;
+  overflow: hidden;
+  background: var(--iaa-bg);
+  border: 1.5px solid var(--iaa-border-strong);
+  border-radius: var(--iaa-radius-pill);
+  padding: 7px 7px 7px 18px;
+  box-sizing: border-box;
+  box-shadow: var(--iaa-shadow-lift);
+  transition: width 0.44s cubic-bezier(0.65, 0, 0.35, 1),
+    padding 0.44s cubic-bezier(0.65, 0, 0.35, 1),
+    gap 0.44s cubic-bezier(0.65, 0, 0.35, 1),
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+.iaa-dock__bar:focus-within {
+  border-color: var(--iaa-brand);
+  box-shadow: var(--iaa-shadow-lift),
+    0 0 0 4px color-mix(in srgb, var(--iaa-brand) 22%, transparent);
+}
+.iaa-dock__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--iaa-brand);
+  transition: opacity 0.2s ease;
+}
+.iaa-dock__input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  padding: 11px 0;
+  font-family: var(--iaa-font);
+  font-size: 16px;
+  color: var(--iaa-fg);
+  transition: opacity 0.2s ease;
+}
+.iaa-dock__input:focus { outline: none; }
+.iaa-dock__input::placeholder { color: var(--iaa-fg-subtle); }
+.iaa-dock__send {
+  position: relative;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--iaa-brand);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+.iaa-dock__send:hover {
+  background: color-mix(in srgb, var(--iaa-brand) 78%, #000 22%);
+}
+.iaa-dock__send-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.2s ease;
+}
+.iaa-dock__send-icon--close { opacity: 0; }
+
+/* Collapsed — folds to a circle around the button while chat is open. */
+.iaa-dock--collapsed .iaa-dock__bar {
+  width: 76px;
+  padding-left: 7px;
+  gap: 0;
+}
+.iaa-dock--collapsed .iaa-dock__icon,
+.iaa-dock--collapsed .iaa-dock__input {
+  opacity: 0;
+  pointer-events: none;
+}
+.iaa-dock--collapsed .iaa-dock__send-icon--send { opacity: 0; }
+.iaa-dock--collapsed .iaa-dock__send-icon--close { opacity: 1; }
+
+/* Dismiss chip — fades in on hover; click hides the dock site-wide. */
+.iaa-dock__dismiss {
+  position: absolute;
+  top: -18px;
+  right: -18px;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(20, 22, 18, 0.55);
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(20, 22, 18, 0.22);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease, background 0.15s ease;
+}
+.iaa-dock--hint .iaa-dock__dismiss {
+  opacity: 1;
+  pointer-events: auto;
+}
+.iaa-dock__dismiss:hover { background: rgba(20, 22, 18, 0.82); }
+.iaa-dock--collapsed .iaa-dock__dismiss { display: none; }
+
+/* Narrow viewports — clear the corner chat-widget button. */
+@media (max-width: 52rem) {
+  .iaa-dock { padding-right: 90px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iaa-dock,
+  .iaa-dock__bar,
+  .iaa-dock__icon,
+  .iaa-dock__input,
+  .iaa-dock__send,
+  .iaa-dock__send-icon,
+  .iaa-dock__dismiss,
+  .iaa-assist__bar,
+  .iaa-assist__icon,
+  .iaa-assist__input,
+  .iaa-assist__send,
+  .iaa-assist__chip { transition: none; }
+  .iaa-assist__send.is-hinting svg { animation: none; }
+}
