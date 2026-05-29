@@ -49,7 +49,8 @@
 
 	var CFG = window.ICAIA || {};
 	var SUGGESTIONS = Array.isArray(CFG.suggestions) ? CFG.suggestions.slice() : [];
-	var BRAND = CFG.brand || '#0057B8';
+	// Brand may be empty — that signals "don't override the chat widget".
+	var BRAND = typeof CFG.brand === 'string' ? CFG.brand : '';
 	var FONT_STACK = CFG.fontStack || "'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 	var REDUCED_MOTION = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -173,9 +174,14 @@
 	function styleChatWidget() {
 		var el = chatWidgetEl();
 		if (!el) return;
-		var tokens = brandTokens();
-		for (var k in tokens) {
-			if (Object.prototype.hasOwnProperty.call(tokens, k)) el.style.setProperty(k, tokens[k]);
+		// Only push brand-color tokens when an explicit brand is set in
+		// the plugin settings; otherwise leave the chat widget on the
+		// colors the admin configured over in Inkline Connect.
+		if (BRAND) {
+			var tokens = brandTokens();
+			for (var k in tokens) {
+				if (Object.prototype.hasOwnProperty.call(tokens, k)) el.style.setProperty(k, tokens[k]);
+			}
 		}
 		if (!el.shadowRoot) return;
 		var css = buildShadowCss();

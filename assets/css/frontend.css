@@ -10,8 +10,11 @@
  */
 
 :root {
-  --iaa-brand: #0057B8;
-  --iaa-brand-hover: #0057B8;
+  /* Neutral fallback — used when the admin leaves the brand colour
+   * empty in settings. The PHP enqueue overrides this on :root when
+   * a brand colour is configured. */
+  --iaa-brand: #2b2b2b;
+  --iaa-brand-hover: #2b2b2b;
   --iaa-font: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   /* Internal tokens. */
   --iaa-bg: #ffffff;
@@ -115,6 +118,10 @@
   padding: 0;
   border: 0;
   border-radius: 50%;
+  /* Sit at the bar's top-left corner, half on the rounded edge. */
+  top: -2px;
+  left: -2px;
+  right: auto;
 }
 .iaa-assist .iaa-assist__chip {
   border-radius: 9999px;
@@ -424,8 +431,13 @@
 /* Dismiss chip — fades in on hover; click hides the dock site-wide. */
 .iaa-dock__dismiss {
   position: absolute;
-  top: -18px;
-  right: -18px;
+  /* Sit at the bar's top-left corner, straddling the rounded edge —
+   * half the chip sits over the bar, half outside it. Locked to the
+   * left in the two-class rule above so theme button rules can't
+   * undo this. */
+  top: -2px;
+  left: -2px;
+  right: auto;
   width: 26px;
   height: 26px;
   border: 0;

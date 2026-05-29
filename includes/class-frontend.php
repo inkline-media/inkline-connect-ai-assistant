@@ -23,8 +23,12 @@ class ICAIA_Frontend {
 
 	/**
 	 * Whether the plugin should render anything on the front end.
+	 * Requires both the master toggle and the chat-widget embed.
 	 */
 	public function is_active() {
+		if ( ! ICAIA_Settings::get( 'enabled', 1 ) ) {
+			return false;
+		}
 		$embed = (string) ICAIA_Settings::get( 'chat_embed', '' );
 		return '' !== trim( $embed );
 	}
@@ -61,27 +65,35 @@ class ICAIA_Frontend {
 
 		$suggestions = $this->parse_suggestions( (string) $s['suggestions'] );
 
+		$brand_raw = trim( (string) $s['brand_color'] );
+		$brand     = $brand_raw ? $this->safe_color( $brand_raw ) : '';
+
 		wp_localize_script(
 			'icaia-frontend',
 			'ICAIA',
 			array(
-				'brand'       => $s['brand_color'] ? $s['brand_color'] : '#0057B8',
+				// Empty string signals JS not to push brand tokens into
+				// the chat widget's shadow DOM, so the widget keeps the
+				// colors configured in Inkline Connect.
+				'brand'       => $brand,
 				'fontStack'   => $s['font_stack'],
 				'suggestions' => array_values( $suggestions ),
 				'dock'        => ! empty( $s['dock_enabled'] ),
 			)
 		);
 
-		// Brand color + font stack flow into both the page styles and
-		// the (shadow-DOM) chat widget through CSS custom properties.
-		$brand = $this->safe_color( (string) $s['brand_color'] );
-		$font  = $s['font_stack'];
-		$css   = sprintf(
-			':root{--iaa-brand:%1$s;--iaa-brand-hover:%1$s;--iaa-font:%2$s;}',
-			esc_attr( $brand ),
-			esc_attr( $font )
-		);
-		wp_add_inline_style( 'icaia-frontend', $css );
+		// Always push the font stack. Only push the brand color when
+		// one is set, so it can override the CSS-default; otherwise the
+		// CSS default kicks in for our own components and the chat
+		// widget keeps its Inkline Connect-configured colors.
+		$inline = sprintf( ':root{--iaa-font:%s;}', esc_attr( $s['font_stack'] ) );
+		if ( '' !== $brand ) {
+			$inline .= sprintf(
+				':root{--iaa-brand:%1$s;--iaa-brand-hover:%1$s;}',
+				esc_attr( $brand )
+			);
+		}
+		wp_add_inline_style( 'icaia-frontend', $inline );
 	}
 
 	/**

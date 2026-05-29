@@ -44,8 +44,9 @@ class ICAIA_Settings {
 	 */
 	public static function defaults() {
 		return array(
+			'enabled'      => 1,
 			'chat_embed'   => '',
-			'brand_color'  => '#0057B8',
+			'brand_color'  => '',
 			'font_stack'   => "'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif",
 			'load_inter'   => 1,
 			'dock_enabled' => 1,
@@ -80,9 +81,13 @@ class ICAIA_Settings {
 		}
 
 		if ( isset( $input['brand_color'] ) ) {
-			$color             = sanitize_hex_color( $input['brand_color'] );
-			$out['brand_color'] = $color ? $color : $defaults['brand_color'];
+			$raw   = trim( (string) $input['brand_color'] );
+			$color = '' === $raw ? '' : sanitize_hex_color( $raw );
+			// Empty string is a valid value — it means "do not override".
+			$out['brand_color'] = null === $color ? '' : (string) $color;
 		}
+
+		$out['enabled'] = ! empty( $input['enabled'] ) ? 1 : 0;
 
 		if ( isset( $input['font_stack'] ) ) {
 			$out['font_stack'] = sanitize_text_field( $input['font_stack'] );
@@ -126,8 +131,10 @@ class ICAIA_Settings {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
-		$s        = self::all();
-		$active   = '' !== trim( (string) $s['chat_embed'] );
+		$s              = self::all();
+		$has_embed      = '' !== trim( (string) $s['chat_embed'] );
+		$enabled        = ! empty( $s['enabled'] );
+		$active         = $has_embed && $enabled;
 		?>
 		<div class="wrap">
 			<h1><?php esc_html_e( 'AI Website Assistant', 'inkline-connect-ai-assistant' ); ?></h1>
@@ -135,7 +142,11 @@ class ICAIA_Settings {
 				<?php esc_html_e( 'This plugin drops an Inkline Connect–powered AI assistant into your site: a docked bar that follows visitors as they scroll, an in-page widget (shortcode and Elementor), and matching styling for the connected chat widget. Paste your Inkline Connect chat-widget embed code below to activate it.', 'inkline-connect-ai-assistant' ); ?>
 			</p>
 
-			<?php if ( ! $active ) : ?>
+			<?php if ( ! $enabled ) : ?>
+				<div class="notice notice-info inline" style="margin:16px 0">
+					<p><?php esc_html_e( 'The assistant is turned off. The dock, in-page widget, and chat widget are all hidden on the front end. Toggle it on below to bring everything back.', 'inkline-connect-ai-assistant' ); ?></p>
+				</div>
+			<?php elseif ( ! $has_embed ) : ?>
 				<div class="notice notice-warning inline" style="margin:16px 0">
 					<p><?php esc_html_e( 'The assistant is not active yet. Paste your Inkline Connect chat-widget embed code below and save to turn it on.', 'inkline-connect-ai-assistant' ); ?></p>
 				</div>
@@ -147,6 +158,25 @@ class ICAIA_Settings {
 
 			<form method="post" action="options.php">
 				<?php settings_fields( self::SLUG ); ?>
+
+				<h2 class="title"><?php esc_html_e( 'Master switch', 'inkline-connect-ai-assistant' ); ?></h2>
+				<table class="form-table" role="presentation">
+					<tr>
+						<th scope="row"><?php esc_html_e( 'Assistant', 'inkline-connect-ai-assistant' ); ?></th>
+						<td>
+							<label>
+								<input
+									type="checkbox"
+									name="<?php echo esc_attr( ICAIA_OPTION ); ?>[enabled]"
+									value="1"
+									<?php checked( ! empty( $s['enabled'] ) ); ?>
+								/>
+								<?php esc_html_e( 'Show the assistant on the front end', 'inkline-connect-ai-assistant' ); ?>
+							</label>
+							<p class="description"><?php esc_html_e( 'When off, the dock, every in-page widget instance (shortcode and Elementor), and the chat-widget embed are all suppressed. The shortcode renders nothing — no markup, no space. Your settings stay saved; flip this back on to bring everything back.', 'inkline-connect-ai-assistant' ); ?></p>
+						</td>
+					</tr>
+				</table>
 
 				<h2 class="title"><?php esc_html_e( 'Inkline Connect', 'inkline-connect-ai-assistant' ); ?></h2>
 				<table class="form-table" role="presentation">
@@ -184,9 +214,9 @@ class ICAIA_Settings {
 								name="<?php echo esc_attr( ICAIA_OPTION ); ?>[brand_color]"
 								value="<?php echo esc_attr( $s['brand_color'] ); ?>"
 								class="icaia-color-field"
-								data-default-color="#0057B8"
+								data-default-color=""
 							/>
-							<p class="description"><?php esc_html_e( 'Applied to the send button, focus ring, and accent details across the in-page widget, the dock, and the chat widget.', 'inkline-connect-ai-assistant' ); ?></p>
+							<p class="description"><?php esc_html_e( 'Optional. When set, applied to the send button, focus ring, and accent details across the in-page widget, the dock, and the chat widget. Leave blank to leave the chat widget on the colors you configured in Inkline Connect (the in-page widget and dock then use a neutral default).', 'inkline-connect-ai-assistant' ); ?></p>
 						</td>
 					</tr>
 					<tr>
