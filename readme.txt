@@ -4,7 +4,7 @@ Tags: ai, assistant, chat, conversational, inkline connect, leadconnector
 Requires at least: 5.8
 Tested up to: 6.5
 Requires PHP: 7.4
-Stable tag: 0.1.2
+Stable tag: 0.1.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,9 @@ Yes — a small chip appears on hover. Clicking it dismisses the dock site-wide.
 Yes. The Elementor widget is optional — the shortcode covers every layout.
 
 == Changelog ==
+
+= 0.1.3 =
+* Fix: themes that styled all buttons (auto width, square border-radius, custom backgrounds) were squashing the assistant send button into a small rectangle instead of the brand-coloured circle. The CSS now uses two-class selectors and a defensive reset so theme rules cannot override the assistant or dock component shapes.
 
 = 0.1.2 =
 * Honor the "Check Again" button on Dashboard → Updates: the updater now invalidates its 6-hour release cache when WordPress runs a forced check (`?force-check=1`), so the click reaches GitHub for a fresh lookup instead of returning a stale entry.

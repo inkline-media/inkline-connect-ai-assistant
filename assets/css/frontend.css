@@ -26,6 +26,102 @@
 }
 
 /* ---------------------------------------------------------------- */
+/* Theme-reset — block themes from overriding our component shape.   */
+/* We use two-class selectors throughout (.iaa-dock .iaa-dock__send  */
+/* etc.) so we keep specificity above the typical theme button rule  */
+/* without resorting to !important. Resets undo common theme styles  */
+/* (auto width on buttons, border radius, padding, line-height,      */
+/* appearance) so our explicit dimensions actually take effect.      */
+/* ---------------------------------------------------------------- */
+
+.iaa-assist *,
+.iaa-assist *::before,
+.iaa-assist *::after,
+.iaa-dock *,
+.iaa-dock *::before,
+.iaa-dock *::after { box-sizing: border-box; }
+
+.iaa-assist .iaa-assist__bar,
+.iaa-dock .iaa-dock__bar {
+  margin: 0;
+  font-family: var(--iaa-font);
+}
+
+.iaa-assist .iaa-assist__input,
+.iaa-dock .iaa-dock__input {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  outline: none;
+  font: inherit;
+  line-height: 1.4;
+  color: var(--iaa-fg);
+  border-radius: 0;
+  min-height: 0;
+}
+.iaa-assist .iaa-assist__input:focus,
+.iaa-dock .iaa-dock__input:focus { box-shadow: none; outline: none; }
+
+.iaa-assist .iaa-assist__send,
+.iaa-dock .iaa-dock__send,
+.iaa-dock .iaa-dock__dismiss,
+.iaa-assist .iaa-assist__chip {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+  font-family: var(--iaa-font);
+  font-weight: inherit;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  text-shadow: none;
+  text-decoration: none;
+}
+
+/* Lock the send-button and dismiss-chip shapes with two-class
+ * specificity so a theme's generic button rule cannot squash them. */
+.iaa-assist .iaa-assist__send {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--iaa-brand);
+  color: #ffffff;
+  box-shadow: none;
+}
+.iaa-dock .iaa-dock__send {
+  width: 58px;
+  height: 58px;
+  min-width: 58px;
+  min-height: 58px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--iaa-brand);
+  color: #ffffff;
+  box-shadow: none;
+}
+.iaa-dock .iaa-dock__dismiss {
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  min-height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+}
+.iaa-assist .iaa-assist__chip {
+  border-radius: 9999px;
+  padding: 7px 14px;
+}
+
+/* ---------------------------------------------------------------- */
 /* In-page assistant                                                 */
 /* ---------------------------------------------------------------- */
 
