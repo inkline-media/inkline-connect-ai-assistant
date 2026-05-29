@@ -139,7 +139,17 @@ class ICAIA_Settings {
 		$active         = $has_embed && $enabled;
 		?>
 		<div class="wrap">
-			<h1><?php esc_html_e( 'AI Website Assistant', 'inkline-connect-ai-assistant' ); ?></h1>
+			<h1 style="display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap">
+				<?php esc_html_e( 'AI Website Assistant', 'inkline-connect-ai-assistant' ); ?>
+				<a
+					href="<?php echo esc_url( admin_url( 'plugins.php' ) ); ?>"
+					class="icaia-version"
+					title="<?php esc_attr_e( 'Manage the plugin (Plugins → Installed Plugins)', 'inkline-connect-ai-assistant' ); ?>"
+					style="display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:9999px;background:#f0f0f1;color:#50575e;font-size:11px;font-weight:600;letter-spacing:0.02em;text-decoration:none;line-height:1;transition:background 0.15s ease,color 0.15s ease"
+					onmouseover="this.style.background='#2271b1';this.style.color='#fff'"
+					onmouseout="this.style.background='#f0f0f1';this.style.color='#50575e'"
+				>v<?php echo esc_html( ICAIA_VERSION ); ?></a>
+			</h1>
 			<p class="description" style="max-width:48rem">
 				<?php esc_html_e( 'This plugin drops an Inkline Connect–powered AI assistant into your site: a docked bar that follows visitors as they scroll, an in-page widget (shortcode and Elementor), and matching styling for the connected chat widget. Paste your Inkline Connect chat-widget embed code below to activate it.', 'inkline-connect-ai-assistant' ); ?>
 			</p>
