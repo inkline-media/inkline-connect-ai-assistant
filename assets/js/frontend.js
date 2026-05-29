@@ -34,6 +34,19 @@
 
 	if (typeof window === 'undefined' || typeof document === 'undefined') return;
 
+	// Defer everything until the DOM is parsed. WordPress prints this
+	// script in the footer at the same hook priority as the dock + chat
+	// markup, and core's footer-scripts callback runs first by
+	// registration order — so without this guard the IIFE executes
+	// before document.querySelector can see the dock element.
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', start);
+	} else {
+		start();
+	}
+
+	function start() {
+
 	var CFG = window.ICAIA || {};
 	var SUGGESTIONS = Array.isArray(CFG.suggestions) ? CFG.suggestions.slice() : [];
 	var BRAND = CFG.brand || '#0057B8';
@@ -378,4 +391,6 @@
 		// Animated placeholder for the dock — borrow the page pool.
 		if (dockInput) startPlaceholderTyper(dockInput, SUGGESTIONS);
 	}
+
+	} // end start()
 })();
