@@ -77,7 +77,11 @@ class ICAIA_Settings {
 		return array(
 			'enabled'            => 1,
 			'chat_embed'         => '',
-			'brand_color'        => '',
+			// Inkline brand green. Empty is still a valid saved value
+			// (meaning "no override; let the chat widget use whatever
+			// colour you configured in Inkline Connect"), but Restore
+			// Default lands here.
+			'brand_color'        => '#40b349',
 			// Font mode: 'google' or 'custom'. Google pairs with
 			// font_google_family + font_google_load; custom pairs with
 			// font_stack (raw CSS font-family value).

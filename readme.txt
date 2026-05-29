@@ -4,7 +4,7 @@ Tags: ai, assistant, chat, conversational, inkline connect, leadconnector
 Requires at least: 5.8
 Tested up to: 6.5
 Requires PHP: 7.4
-Stable tag: 0.1.15
+Stable tag: 0.1.16
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,9 @@ Yes — a small chip appears on hover. Clicking it dismisses the dock site-wide.
 Yes. The Elementor widget is optional — the shortcode covers every layout.
 
 == Changelog ==
+
+= 0.1.16 =
+* The shipped default for the brand colour is now the Inkline green (#40b349) instead of empty, so clicking **Restore Default** on the brand colour actually applies the green rather than clearing the field. Clearing the field by hand still means "no override; let the chat widget use whatever colour you configured in Inkline Connect" — the meaning of an empty value is unchanged. The freeze-on-first-save contract still applies: existing installs that have already saved keep whatever they had.
 
 = 0.1.15 =
 * Consistent Restore default UI: every restore control is now a small WordPress default-styled button with the undo dashicon + "Restore Default" label. The previous mix of text links and a larger secondary button is gone. Clicking briefly flashes "Default restored. Click 'Save Changes' below to save." next to the button so the admin knows the field changed without scanning for it.
