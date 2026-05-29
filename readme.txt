@@ -4,7 +4,7 @@ Tags: ai, assistant, chat, conversational, inkline connect, leadconnector
 Requires at least: 5.8
 Tested up to: 6.5
 Requires PHP: 7.4
-Stable tag: 0.1.12
+Stable tag: 0.1.13
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,11 @@ Yes — a small chip appears on hover. Clicking it dismisses the dock site-wide.
 Yes. The Elementor widget is optional — the shortcode covers every layout.
 
 == Changelog ==
+
+= 0.1.13 =
+* Expose the chat-widget surface colours as admin settings. Two new optional colour pickers — **Chat header background** and **Received message bubble** — sit alongside the brand colour. Leave them blank to keep the cream prototype defaults (#FBFBF8 header, #F3F0E9 bubbles). When the header colour is set, the matching header bottom border is auto-derived as a subtly darker shade.
+* Fix: the chat-widget close (down) arrow was almost invisible against the cream header. The shadow-DOM stylesheet now recolours the arrow to a foreground that reads on whichever header background is in effect (dark text on a light header, white on a dark header).
+* Internal: restructured the shadow-DOM token push so the surface tokens can apply independently of the brand colour — previously they only flowed in when a brand colour was set.
 
 = 0.1.12 =
 * Add a "Restore Inkline default (Inter)" button in the Font section. One click switches back to Google mode, sets the family to Inter, and re-enables the Google Fonts loader — useful when an admin has experimented with another font and forgot what the default was.

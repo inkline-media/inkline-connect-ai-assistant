@@ -66,6 +66,11 @@ class ICAIA_Frontend {
 		$brand_raw = trim( (string) $s['brand_color'] );
 		$brand     = $brand_raw ? $this->safe_color( $brand_raw ) : '';
 
+		$chat_header_raw   = trim( (string) ( $s['chat_header_color'] ?? '' ) );
+		$chat_header       = $chat_header_raw ? sanitize_hex_color( $chat_header_raw ) : '';
+		$chat_received_raw = trim( (string) ( $s['chat_received_color'] ?? '' ) );
+		$chat_received     = $chat_received_raw ? sanitize_hex_color( $chat_received_raw ) : '';
+
 		wp_localize_script(
 			'icaia-frontend',
 			'ICAIA',
@@ -73,10 +78,14 @@ class ICAIA_Frontend {
 				// Empty string signals JS not to push brand tokens into
 				// the chat widget's shadow DOM, so the widget keeps the
 				// colors configured in Inkline Connect.
-				'brand'       => $brand,
-				'fontStack'   => $font['family'],
-				'suggestions' => array_values( $suggestions ),
-				'dock'        => ! empty( $s['dock_enabled'] ),
+				'brand'         => $brand,
+				// Optional chat-widget surface overrides. Empty = use the
+				// cream default whenever any other token gets pushed.
+				'chatHeader'    => $chat_header ? (string) $chat_header : '',
+				'chatReceived'  => $chat_received ? (string) $chat_received : '',
+				'fontStack'     => $font['family'],
+				'suggestions'   => array_values( $suggestions ),
+				'dock'          => ! empty( $s['dock_enabled'] ),
 			)
 		);
 

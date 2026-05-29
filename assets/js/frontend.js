@@ -51,8 +51,49 @@
 	var SUGGESTIONS = Array.isArray(CFG.suggestions) ? CFG.suggestions.slice() : [];
 	// Brand may be empty — that signals "don't override the chat widget".
 	var BRAND = typeof CFG.brand === 'string' ? CFG.brand : '';
+	// Optional chat-widget surface overrides — empty falls back to cream.
+	var CHAT_HEADER = typeof CFG.chatHeader === 'string' ? CFG.chatHeader : '';
+	var CHAT_RECEIVED = typeof CFG.chatReceived === 'string' ? CFG.chatReceived : '';
 	var FONT_STACK = CFG.fontStack || "'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 	var REDUCED_MOTION = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	// Cream defaults from the design prototype — applied to chat-widget
+	// surface tokens whenever brand or chat surface settings are set.
+	var DEFAULT_CHAT_HEADER   = '#FBFBF8';
+	var DEFAULT_CHAT_DARKEN   = '#F3F0E9';
+	var DEFAULT_CHAT_RECEIVED = '#F3F0E9';
+
+	// Darken a hex colour by `amount` (0-1). Used to derive the header
+	// bottom border from the header background when the admin picks a
+	// custom header colour, so they don't have to choose two.
+	function darken(hex, amount) {
+		var h = String(hex || '').replace('#', '');
+		if (h.length === 3) h = h.charAt(0) + h.charAt(0) + h.charAt(1) + h.charAt(1) + h.charAt(2) + h.charAt(2);
+		if (h.length !== 6) return hex;
+		var r = parseInt(h.slice(0, 2), 16);
+		var g = parseInt(h.slice(2, 4), 16);
+		var b = parseInt(h.slice(4, 6), 16);
+		var f = Math.max(0, Math.min(1, 1 - amount));
+		r = Math.round(r * f);
+		g = Math.round(g * f);
+		b = Math.round(b * f);
+		var to = function (n) { var s = n.toString(16); return s.length === 1 ? '0' + s : s; };
+		return '#' + to(r) + to(g) + to(b);
+	}
+
+	// Pick a foreground that reads well on `bg`. Used to recolour the
+	// chat widget's close arrow so it doesn't disappear into a cream
+	// header.
+	function readableOn(bg) {
+		var h = String(bg || '').replace('#', '');
+		if (h.length === 3) h = h.charAt(0) + h.charAt(0) + h.charAt(1) + h.charAt(1) + h.charAt(2) + h.charAt(2);
+		if (h.length !== 6) return '#262420';
+		var r = parseInt(h.slice(0, 2), 16) / 255;
+		var g = parseInt(h.slice(2, 4), 16) / 255;
+		var b = parseInt(h.slice(4, 6), 16) / 255;
+		var lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+		return lum > 0.6 ? '#262420' : '#FFFFFF';
+	}
 
 	/* ------------------------------------------------------------ */
 	/*  Animated placeholder — shared by in-page assistants and dock.*/
@@ -137,38 +178,58 @@
 		return null;
 	}
 
-	// Push brand colour + matching styling into the widget's shadow DOM.
-	// Brand-coloured slots take the configured plugin colour; structural
-	// slots (header background, message bubbles, page background) take
-	// the neutral palette used by the design prototype, so the assistant
-	// reads as a cohesive surface instead of inheriting the legacy blue
-	// header that older Inkline Connect installs ship with.
+	// Resolve the chat-widget surface palette. The admin can leave both
+	// surface settings blank — in that case the cream prototype defaults
+	// apply whenever something else (brand color, font) is being pushed.
+	// `--chat-widget-header-darken-color` is auto-derived from the header
+	// background so admins only have to pick one shade.
+	function chatSurface() {
+		var header = CHAT_HEADER || DEFAULT_CHAT_HEADER;
+		var darken_ = CHAT_HEADER ? darken(CHAT_HEADER, 0.06) : DEFAULT_CHAT_DARKEN;
+		var received = CHAT_RECEIVED || DEFAULT_CHAT_RECEIVED;
+		return { header: header, darken: darken_, received: received };
+	}
+
+	// Build the tokens that override the widget's CSS custom properties.
+	// Three independent layers — pushed only when relevant settings exist:
+	//   - brand-coloured slots (only when BRAND is set)
+	//   - surface slots (when BRAND, CHAT_HEADER, or CHAT_RECEIVED is set)
+	//   - typography (always — font is always configured)
 	function brandTokens() {
-		return {
-			// Brand-coloured slots.
-			'--chat-widget-active-color': BRAND,
-			'--chat-widget-bubble-color': BRAND,
-			'--chat-widget-primary-color': BRAND,
-			'--chat-widget-primary-solid-color': BRAND,
-			'--chat-widget-button-color': BRAND,
-			'--chat-widget-header-message-text-color': BRAND,
-			'--chat-widget-sender-message-color': BRAND,
-			'--chat-widget-avatar-border-color': BRAND,
-			// Neutral surface slots — match the prototype.
-			'--chat-widget-background-color': '#FFFFFF',
-			'--chat-widget-header-color': '#FBFBF8',
-			'--chat-widget-header-darken-color': '#F3F0E9',
-			'--chat-widget-welcome-message-text-color': '#262420',
-			'--chat-widget-sender-message-text-color': '#FFFFFF',
-			'--chat-widget-received-message-color': '#F3F0E9',
-			'--chat-widget-received-message-text-color': '#262420',
-			'--chat-widget-avatar-background-color': '#FFFFFF',
-			// Typography.
-			'--chat-widget-font-family': FONT_STACK,
-		};
+		var tokens = { '--chat-widget-font-family': FONT_STACK };
+		if (BRAND) {
+			tokens['--chat-widget-active-color'] = BRAND;
+			tokens['--chat-widget-bubble-color'] = BRAND;
+			tokens['--chat-widget-primary-color'] = BRAND;
+			tokens['--chat-widget-primary-solid-color'] = BRAND;
+			tokens['--chat-widget-button-color'] = BRAND;
+			tokens['--chat-widget-header-message-text-color'] = BRAND;
+			tokens['--chat-widget-sender-message-color'] = BRAND;
+			tokens['--chat-widget-avatar-border-color'] = BRAND;
+		}
+		if (BRAND || CHAT_HEADER || CHAT_RECEIVED) {
+			var s = chatSurface();
+			tokens['--chat-widget-background-color'] = '#FFFFFF';
+			tokens['--chat-widget-header-color'] = s.header;
+			tokens['--chat-widget-header-darken-color'] = s.darken;
+			tokens['--chat-widget-welcome-message-text-color'] = '#262420';
+			tokens['--chat-widget-sender-message-text-color'] = '#FFFFFF';
+			tokens['--chat-widget-received-message-color'] = s.received;
+			tokens['--chat-widget-received-message-text-color'] = '#262420';
+			tokens['--chat-widget-avatar-background-color'] = '#FFFFFF';
+		}
+		return tokens;
 	}
 	function buildShadowCss() {
-		var darker = BRAND; // hover swap handled by the widget itself.
+		// Close-arrow contrast: the widget ships a light arrow that
+		// vanishes on a cream header. Recolour the SVG to a foreground
+		// that reads on whatever header background is in effect.
+		var headerBg = CHAT_HEADER || (BRAND ? DEFAULT_CHAT_HEADER : '');
+		var arrow = headerBg ? readableOn(headerBg) : '';
+		var arrowRule = arrow
+			? '.lc_text-widget_heading_close--btn svg,'
+				+ '.lc_text-widget_heading_close--btn svg *{fill:' + arrow + ' !important;stroke:' + arrow + ' !important;color:' + arrow + ' !important;opacity:1 !important}'
+			: '';
 		return [
 			'.lc_text-widget--box{border-radius:20px !important;box-shadow:0 4px 14px rgba(20,22,18,0.18),0 20px 52px rgba(20,22,18,0.36) !important}',
 			'.lc_text-widget_heading--root{border-radius:20px 20px 0 0 !important}',
@@ -176,7 +237,8 @@
 			'.bubble.outgoing{border-radius:14px 3px 14px 14px !important}',
 			'.bubble.incoming{border-radius:3px 14px 14px 14px !important}',
 			'.lc_text-widget--bubble img{width:30px !important;height:30px !important}',
-			'.lc_text-widget--bubble{box-shadow:0 4px 14px rgba(20,22,18,0.18),0 20px 52px rgba(20,22,18,0.36) !important}'
+			'.lc_text-widget--bubble{box-shadow:0 4px 14px rgba(20,22,18,0.18),0 20px 52px rgba(20,22,18,0.36) !important}',
+			arrowRule
 		].join('');
 	}
 	function injectShadowStyle(root, css) {
@@ -190,14 +252,13 @@
 	function styleChatWidget() {
 		var el = chatWidgetEl();
 		if (!el) return;
-		// Only push brand-color tokens when an explicit brand is set in
-		// the plugin settings; otherwise leave the chat widget on the
-		// colors the admin configured over in Inkline Connect.
-		if (BRAND) {
-			var tokens = brandTokens();
-			for (var k in tokens) {
-				if (Object.prototype.hasOwnProperty.call(tokens, k)) el.style.setProperty(k, tokens[k]);
-			}
+		// Push tokens when *any* surface override is configured (brand
+		// colour or one of the chat surface settings). With nothing set,
+		// only the font-family token is pushed and the widget keeps the
+		// colours configured in Inkline Connect.
+		var tokens = brandTokens();
+		for (var k in tokens) {
+			if (Object.prototype.hasOwnProperty.call(tokens, k)) el.style.setProperty(k, tokens[k]);
 		}
 		if (!el.shadowRoot) return;
 		var css = buildShadowCss();

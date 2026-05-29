@@ -76,6 +76,12 @@ class ICAIA_Settings {
 			'font_google_family' => 'Inter',
 			'font_google_load'   => 1,
 			'font_stack'         => "'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+			// Optional chat-widget surface overrides. Empty means use
+			// the cream prototype defaults when a brand colour is set,
+			// or leave the chat widget on its Inkline Connect config
+			// when no brand is set.
+			'chat_header_color'   => '',
+			'chat_received_color' => '',
 			'dock_enabled'       => 1,
 			'suggestions' => "How do I cut our martech costs?\nHow do I get our team AI-ready?\nWhat does an AI readiness assessment cover?\nCan you audit my Marketo instance?\nWhich service fits a product launch?\nHow do I prove marketing ROI to the board?\nI need to rebuild our revenue engine.\nHelp me untangle our martech stack.",
 		);
@@ -183,6 +189,17 @@ class ICAIA_Settings {
 		}
 
 		$out['font_google_load'] = ! empty( $input['font_google_load'] ) ? 1 : 0;
+
+		// Optional chat-widget surface overrides — same "empty = no
+		// override" semantics as brand_color.
+		foreach ( array( 'chat_header_color', 'chat_received_color' ) as $key ) {
+			if ( isset( $input[ $key ] ) ) {
+				$raw   = trim( (string) $input[ $key ] );
+				$color = '' === $raw ? '' : sanitize_hex_color( $raw );
+				$out[ $key ] = null === $color ? '' : (string) $color;
+			}
+		}
+
 		$out['dock_enabled']     = ! empty( $input['dock_enabled'] ) ? 1 : 0;
 
 		if ( isset( $input['suggestions'] ) ) {
@@ -316,6 +333,38 @@ class ICAIA_Settings {
 								data-default-color=""
 							/>
 							<p class="description"><?php esc_html_e( 'Optional. When set, applied to the send button, focus ring, and accent details across the in-page widget, the dock, and the chat widget. Leave blank to leave the chat widget on the colors you configured in Inkline Connect (the in-page widget and dock then use a neutral default).', 'inkline-connect-ai-assistant' ); ?></p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row">
+							<label for="icaia-chat-header-color"><?php esc_html_e( 'Chat header background', 'inkline-connect-ai-assistant' ); ?></label>
+						</th>
+						<td>
+							<input
+								id="icaia-chat-header-color"
+								type="text"
+								name="<?php echo esc_attr( ICAIA_OPTION ); ?>[chat_header_color]"
+								value="<?php echo esc_attr( $s['chat_header_color'] ); ?>"
+								class="icaia-color-field"
+								data-default-color=""
+							/>
+							<p class="description"><?php esc_html_e( 'Optional. Background of the chat widget title bar (where the "ASK …" eyebrow sits). Leave blank for the cream default (#FBFBF8). A subtly darker shade is auto-derived for the header bottom border.', 'inkline-connect-ai-assistant' ); ?></p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row">
+							<label for="icaia-chat-received-color"><?php esc_html_e( 'Received message bubble', 'inkline-connect-ai-assistant' ); ?></label>
+						</th>
+						<td>
+							<input
+								id="icaia-chat-received-color"
+								type="text"
+								name="<?php echo esc_attr( ICAIA_OPTION ); ?>[chat_received_color]"
+								value="<?php echo esc_attr( $s['chat_received_color'] ); ?>"
+								class="icaia-color-field"
+								data-default-color=""
+							/>
+							<p class="description"><?php esc_html_e( 'Optional. Background of incoming (assistant) message bubbles. Leave blank for the cream default (#F3F0E9).', 'inkline-connect-ai-assistant' ); ?></p>
 						</td>
 					</tr>
 						<tr>
