@@ -36,12 +36,27 @@
 			});
 		}
 
+		// Show the "Default restored…" confirmation next to a restore
+		// button for a moment, then fade it out. Idempotent — repeat
+		// clicks reset the timer instead of stacking.
+		function flashRestoredMsg($button) {
+			var $msg = $button.closest('.icaia-restore-wrap').find('.icaia-restore-msg');
+			if (!$msg.length) return;
+			var existing = $msg.data('hideTimer');
+			if (existing) clearTimeout(existing);
+			$msg.stop(true, true).prop('hidden', false).css('display', '').show();
+			$msg.data('hideTimer', setTimeout(function () {
+				$msg.fadeOut(300, function () { $msg.prop('hidden', true); });
+			}, 4000));
+		}
+
 		// Restore Inkline default for the font block: switch back to
 		// Google mode, set the family to Inter, and enable the loader.
 		$('#icaia-font-reset').on('click', function () {
 			$('.icaia-font-mode[value="google"]').prop('checked', true).trigger('change');
 			$('#icaia-font-google-family').val('Inter');
 			$('input[name$="[font_google_load]"]').prop('checked', true);
+			flashRestoredMsg($(this));
 		});
 
 		/* --------------------------------------------------------- */
@@ -87,21 +102,21 @@
 
 		$(document).on('click', '.icaia-restore', function (e) {
 			e.preventDefault();
-			var key = $(this).data('key');
-			var target = $(this).data('target');
+			var $btn = $(this);
+			var key = $btn.data('key');
+			var target = $btn.data('target');
 			var $field = $(target);
 			if (!$field.length || !(key in DEFAULTS)) return;
 			var def = DEFAULTS[key];
 
 			if ($field.is(':checkbox')) {
 				setCheckboxField($field, def);
-				return;
-			}
-			if ($field.hasClass('icaia-color-field')) {
+			} else if ($field.hasClass('icaia-color-field')) {
 				setColorField($field, def);
-				return;
+			} else {
+				setTextField($field, def);
 			}
-			setTextField($field, def);
+			flashRestoredMsg($btn);
 		});
 	});
 })(window.jQuery);

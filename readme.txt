@@ -4,7 +4,7 @@ Tags: ai, assistant, chat, conversational, inkline connect, leadconnector
 Requires at least: 5.8
 Tested up to: 6.5
 Requires PHP: 7.4
-Stable tag: 0.1.14
+Stable tag: 0.1.15
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,10 @@ Yes — a small chip appears on hover. Clicking it dismisses the dock site-wide.
 Yes. The Elementor widget is optional — the shortcode covers every layout.
 
 == Changelog ==
+
+= 0.1.15 =
+* Consistent Restore default UI: every restore control is now a small WordPress default-styled button with the undo dashicon + "Restore Default" label. The previous mix of text links and a larger secondary button is gone. Clicking briefly flashes "Default restored. Click 'Save Changes' below to save." next to the button so the admin knows the field changed without scanning for it.
+* Drop the restore links on the two simple checkboxes (Show the assistant on the front end; Show the site-wide docked bar) — they are obvious enough on their own.
 
 = 0.1.14 =
 * Each setting now has a small "↺ Restore default" link next to its description (master switch, brand colour, chat header background, received bubble, docked assistant, starter prompts — the font block already had its own restore button). Clicking stages the shipped default; the admin still has to click Save Changes to keep it.
