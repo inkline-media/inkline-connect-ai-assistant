@@ -74,6 +74,15 @@ class ICAIA_Updater {
 		if ( $plugin_file !== $this->basename ) {
 			return $update;
 		}
+
+		// "Check Again" on Dashboard → Updates loads update-core.php
+		// with ?force-check=1. When that flag is set, drop our own
+		// release cache so the click actually hits GitHub instead of
+		// returning a stale entry from the 6h transient.
+		if ( $this->is_force_check() ) {
+			delete_site_transient( $this->cache_key );
+		}
+
 		$release = $this->get_release();
 		if ( ! $release ) {
 			return $update;
@@ -116,6 +125,19 @@ class ICAIA_Updater {
 			'tested'       => get_bloginfo( 'version' ),
 			'requires_php' => '7.4',
 		);
+	}
+
+	/**
+	 * Detect a user-initiated "force" update check.
+	 *
+	 * The "Check Again" button on Dashboard → Updates redirects to
+	 * update-core.php with ?force-check=1, which core also uses to
+	 * shorten its own update-check timeout. We re-use the same signal
+	 * to invalidate the cached release payload.
+	 */
+	private function is_force_check() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		return ! empty( $_GET['force-check'] );
 	}
 
 	/**
@@ -188,6 +210,9 @@ class ICAIA_Updater {
 		}
 		if ( empty( $args->slug ) || $args->slug !== $this->slug ) {
 			return $result;
+		}
+		if ( $this->is_force_check() ) {
+			delete_site_transient( $this->cache_key );
 		}
 		$release = $this->get_release();
 		if ( ! $release ) {

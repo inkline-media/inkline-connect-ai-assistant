@@ -4,7 +4,7 @@ Tags: ai, assistant, chat, conversational, inkline connect, leadconnector
 Requires at least: 5.8
 Tested up to: 6.5
 Requires PHP: 7.4
-Stable tag: 0.1.1
+Stable tag: 0.1.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,9 @@ Yes — a small chip appears on hover. Clicking it dismisses the dock site-wide.
 Yes. The Elementor widget is optional — the shortcode covers every layout.
 
 == Changelog ==
+
+= 0.1.2 =
+* Honor the "Check Again" button on Dashboard → Updates: the updater now invalidates its 6-hour release cache when WordPress runs a forced check (`?force-check=1`), so the click reaches GitHub for a fresh lookup instead of returning a stale entry.
 
 = 0.1.1 =
 * Fix: the docked assistant stayed hidden because the frontend script ran before the dock markup was in the DOM. The script now defers all DOM work until DOMContentLoaded, so the dock initializes correctly regardless of where the theme prints the footer script.
