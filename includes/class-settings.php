@@ -383,6 +383,17 @@ class ICAIA_Settings {
 								<p class="description"><?php esc_html_e( 'Uncheck if your theme already loads this font, or if you self-host it.', 'inkline-connect-ai-assistant' ); ?></p>
 							</td>
 						</tr>
+						<tr class="icaia-font-row-reset">
+							<th scope="row"></th>
+							<td>
+								<button
+									type="button"
+									class="button button-secondary"
+									id="icaia-font-reset"
+								><?php esc_html_e( 'Restore Inkline default (Inter)', 'inkline-connect-ai-assistant' ); ?></button>
+								<p class="description"><?php esc_html_e( 'Reverts the font source to Google Font, the family to Inter, and turns the Google Fonts loader back on. Click Save Changes to keep it.', 'inkline-connect-ai-assistant' ); ?></p>
+							</td>
+						</tr>
 						<tr class="icaia-font-row icaia-font-row--custom">
 							<th scope="row">
 								<label for="icaia-font-stack"><?php esc_html_e( 'CSS font-family', 'inkline-connect-ai-assistant' ); ?></label>

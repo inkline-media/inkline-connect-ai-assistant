@@ -31,5 +31,14 @@
 				applyMode($(this).data('target'));
 			});
 		}
+
+		// Restore Inkline default: switch back to Google mode, set the
+		// family to Inter, and enable the Google Fonts loader. The
+		// admin still has to Save Changes for it to persist.
+		$('#icaia-font-reset').on('click', function () {
+			$('.icaia-font-mode[value="google"]').prop('checked', true).trigger('change');
+			$('#icaia-font-google-family').val('Inter');
+			$('input[name$="[font_google_load]"]').prop('checked', true);
+		});
 	});
 })(window.jQuery);
