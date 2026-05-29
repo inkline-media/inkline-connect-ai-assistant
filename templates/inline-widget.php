@@ -32,7 +32,7 @@ if ( 'center' === $align ) {
 		<div class="iaa-assist__head">
 			<?php if ( '' !== $eyebrow ) : ?>
 				<span class="iaa-assist__eyebrow">
-					<i class="fa-solid fa-sparkles iaa-assist__eyebrow-glyph" aria-hidden="true"></i>
+					<?php $icaia_svg_class = 'iaa-assist__eyebrow-glyph'; include ICAIA_DIR . 'templates/icons/sparkles-solid.php'; ?>
 					<?php echo esc_html( $eyebrow ); ?>
 				</span>
 			<?php endif; ?>
@@ -47,7 +47,7 @@ if ( 'center' === $align ) {
 
 	<form class="iaa-assist__bar" data-iaa-assist-bar>
 		<span class="iaa-assist__icon" aria-hidden="true">
-			<i class="fa-solid fa-sparkles"></i>
+			<?php $icaia_svg_class = 'iaa-assist__icon-svg'; include ICAIA_DIR . 'templates/icons/sparkles-solid.php'; ?>
 		</span>
 		<input
 			type="text"

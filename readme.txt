@@ -4,7 +4,7 @@ Tags: ai, assistant, chat, conversational, inkline connect, leadconnector
 Requires at least: 5.8
 Tested up to: 6.5
 Requires PHP: 7.4
-Stable tag: 0.1.5
+Stable tag: 0.1.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,9 @@ Yes — a small chip appears on hover. Clicking it dismisses the dock site-wide.
 Yes. The Elementor widget is optional — the shortcode covers every layout.
 
 == Changelog ==
+
+= 0.1.6 =
+* Bundle the Font Awesome Pro 7 `sparkles` glyph as an inline SVG so the assistant renders correctly on sites that don't have Font Awesome Pro loaded. The plugin no longer requires Font Awesome on the host site.
 
 = 0.1.5 =
 * Add a master "Show the assistant on the front end" toggle. When off, the dock, every in-page widget instance (shortcode and Elementor), and the chat-widget embed are all suppressed — the shortcode renders nothing, takes no space.

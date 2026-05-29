@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<div class="iaa-dock__shell">
 		<form class="iaa-dock__bar iaa-assist__bar" data-iaa-assist-bar>
 			<span class="iaa-dock__icon" aria-hidden="true">
-				<i class="fa-solid fa-sparkles"></i>
+				<?php $icaia_svg_class = 'iaa-dock__icon-svg'; include ICAIA_DIR . 'templates/icons/sparkles-solid.php'; ?>
 			</span>
 			<input
 				type="text"

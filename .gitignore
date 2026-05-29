@@ -15,3 +15,13 @@ composer.lock
 
 # Local WordPress test environments
 wp-config-local.php
+
+# Local secrets — never commit
+.env
+.env.local
+.env.*.local
+.npmrc
+
+# Node — only used by tooling that pulls icon assets at build time
+node_modules/
+package-lock.json
