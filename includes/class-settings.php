@@ -23,6 +23,26 @@ class ICAIA_Settings {
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
+		add_filter( 'plugin_action_links_' . plugin_basename( ICAIA_FILE ), array( $this, 'add_settings_action_link' ) );
+	}
+
+	/**
+	 * Add a "Settings" link on the plugin row in Plugins → Installed.
+	 * Slotted in first so it sits ahead of Deactivate / etc.
+	 */
+	public function add_settings_action_link( $links ) {
+		$url = admin_url( 'options-general.php?page=' . self::SLUG );
+		$settings = sprintf(
+			'<a href="%1$s">%2$s</a>',
+			esc_url( $url ),
+			esc_html__( 'Settings', 'inkline-connect-ai-assistant' )
+		);
+		if ( is_array( $links ) ) {
+			array_unshift( $links, $settings );
+		} else {
+			$links = array( $settings );
+		}
+		return $links;
 	}
 
 	/**

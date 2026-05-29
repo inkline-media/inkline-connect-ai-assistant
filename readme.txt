@@ -4,7 +4,7 @@ Tags: ai, assistant, chat, conversational, inkline connect, leadconnector
 Requires at least: 5.8
 Tested up to: 6.5
 Requires PHP: 7.4
-Stable tag: 0.1.9
+Stable tag: 0.1.10
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,9 @@ Yes — a small chip appears on hover. Clicking it dismisses the dock site-wide.
 Yes. The Elementor widget is optional — the shortcode covers every layout.
 
 == Changelog ==
+
+= 0.1.10 =
+* Add a "Settings" action link on the plugin's row in Plugins → Installed Plugins for one-click access to the settings page.
 
 = 0.1.9 =
 * Show a small clickable version pill (e.g. `v0.1.9`) next to the page title on the Settings → AI Website Assistant screen. The pill links to Plugins → Installed Plugins so you can jump straight to the plugin's row.
