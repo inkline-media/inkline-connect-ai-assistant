@@ -9,14 +9,17 @@
  * --iaa-font (the configured font stack).
  */
 
-:root {
-  /* Neutral fallback — used when the admin leaves the brand colour
-   * empty in settings. The PHP enqueue overrides this on :root when
-   * a brand colour is configured. */
+/* Custom properties are scoped to our two component roots, not :root,
+ * so they cannot collide with — or leak into — anything else on the
+ * host site. Everything inside the components inherits them. The PHP
+ * enqueue writes its brand-colour override into the same scope. */
+.iaa-assist,
+.iaa-dock {
+  /* Neutral fallback — overridden by the PHP enqueue when the admin
+   * sets a brand colour in settings. */
   --iaa-brand: #2b2b2b;
   --iaa-brand-hover: #2b2b2b;
   --iaa-font: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  /* Internal tokens. */
   --iaa-bg: #ffffff;
   --iaa-bg-soft: #FBFBF8;
   --iaa-fg: #1f1f1c;

@@ -300,14 +300,32 @@
 
 	var dock = document.querySelector('[data-iaa-dock]');
 	if (dock) {
-		var DISMISS_KEY = 'iaa-dock-dismissed';
+		// Namespaced to the plugin's own prefix to avoid collisions
+		// with any other plugin's localStorage. The previous (shorter)
+		// key is also read once so visitors who dismissed under that
+		// key don't see the dock reappear after the upgrade.
+		var DISMISS_KEY = 'icaia-dock-dismissed';
+		var LEGACY_DISMISS_KEY = 'iaa-dock-dismissed';
 		var readDismissed = function () {
-			try { return localStorage.getItem(DISMISS_KEY) === '1'; }
-			catch (_) { return false; }
+			try {
+				if (localStorage.getItem(DISMISS_KEY) === '1') return true;
+				if (localStorage.getItem(LEGACY_DISMISS_KEY) === '1') {
+					// Migrate forward, then forget the old key.
+					localStorage.setItem(DISMISS_KEY, '1');
+					localStorage.removeItem(LEGACY_DISMISS_KEY);
+					return true;
+				}
+				return false;
+			} catch (_) { return false; }
 		};
 		var writeDismissed = function (v) {
-			try { v ? localStorage.setItem(DISMISS_KEY, '1') : localStorage.removeItem(DISMISS_KEY); }
-			catch (_) {}
+			try {
+				if (v) localStorage.setItem(DISMISS_KEY, '1');
+				else {
+					localStorage.removeItem(DISMISS_KEY);
+					localStorage.removeItem(LEGACY_DISMISS_KEY);
+				}
+			} catch (_) {}
 		};
 
 		var dockInput = dock.querySelector('.iaa-dock__input');

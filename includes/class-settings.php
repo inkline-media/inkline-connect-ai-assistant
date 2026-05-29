@@ -13,6 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+if ( ! class_exists( 'ICAIA_Settings' ) ) :
+
 class ICAIA_Settings {
 
 	const SLUG = 'inkline-connect-ai-assistant';
@@ -303,3 +305,6 @@ class ICAIA_Settings {
 		<?php
 	}
 }
+
+endif;
+

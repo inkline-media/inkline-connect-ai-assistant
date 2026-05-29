@@ -16,6 +16,8 @@ if ( ! class_exists( '\\Elementor\\Widget_Base' ) ) {
 	return;
 }
 
+if ( ! class_exists( 'ICAIA_Elementor_Widget' ) ) :
+
 class ICAIA_Elementor_Widget extends \Elementor\Widget_Base {
 
 	public function get_name() {
@@ -116,3 +118,6 @@ class ICAIA_Elementor_Widget extends \Elementor\Widget_Base {
 		echo do_shortcode( $shortcode ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 }
+
+endif;
+

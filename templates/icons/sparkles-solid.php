@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 $icaia_svg_class = isset( $icaia_svg_class ) ? (string) $icaia_svg_class : '';
 ?>
 <svg
-	class="<?php echo esc_attr( trim( 'iaa-icon iaa-icon--sparkles ' . $icaia_svg_class ) ); ?>"
+	<?php if ( '' !== $icaia_svg_class ) : ?>class="<?php echo esc_attr( $icaia_svg_class ); ?>"<?php endif; ?>
 	viewBox="0 0 576 512"
 	aria-hidden="true"
 	focusable="false"

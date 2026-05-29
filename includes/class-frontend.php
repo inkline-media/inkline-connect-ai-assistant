@@ -12,6 +12,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+if ( ! class_exists( 'ICAIA_Frontend' ) ) :
+
 class ICAIA_Frontend {
 
 	public function __construct() {
@@ -85,11 +87,16 @@ class ICAIA_Frontend {
 		// Always push the font stack. Only push the brand color when
 		// one is set, so it can override the CSS-default; otherwise the
 		// CSS default kicks in for our own components and the chat
-		// widget keeps its Inkline Connect-configured colors.
-		$inline = sprintf( ':root{--iaa-font:%s;}', esc_attr( $s['font_stack'] ) );
+		// widget keeps its Inkline Connect-configured colors. The
+		// variables are scoped to our component roots so they never
+		// leak into the host site's CSS.
+		$inline = sprintf(
+			'.iaa-assist,.iaa-dock{--iaa-font:%s;}',
+			esc_attr( $s['font_stack'] )
+		);
 		if ( '' !== $brand ) {
 			$inline .= sprintf(
-				':root{--iaa-brand:%1$s;--iaa-brand-hover:%1$s;}',
+				'.iaa-assist,.iaa-dock{--iaa-brand:%1$s;--iaa-brand-hover:%1$s;}',
 				esc_attr( $brand )
 			);
 		}
@@ -173,3 +180,6 @@ class ICAIA_Frontend {
 		echo "\n";
 	}
 }
+
+endif;
+

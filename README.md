@@ -79,6 +79,29 @@ The plugin caches release lookups for 6 hours (and failed lookups for 1 hour, so
 
 The plugin ships the Font Awesome Pro `sparkles` SVG inline (Commercial License), so the host site does not need Font Awesome loaded.
 
+## Namespacing
+
+Everything the plugin defines is prefixed so it cannot collide with other plugins or themes on the host site:
+
+| Layer | Prefix | Examples |
+| --- | --- | --- |
+| PHP constants | `ICAIA_` | `ICAIA_VERSION`, `ICAIA_OPTION`, `ICAIA_DIR` |
+| PHP classes | `ICAIA_` | `ICAIA_Settings`, `ICAIA_Frontend`, `ICAIA_Updater`, `ICAIA_Elementor_Widget` |
+| PHP free functions | (none) | All behaviour lives on classes — no global functions are defined |
+| WP option / transient keys | `icaia_` / `icaia-` | `icaia_settings`, `icaia_release_<hash>` |
+| Asset handles | `icaia-` | `icaia-frontend`, `icaia-admin-settings`, `icaia-inter` |
+| Shortcode | `inkline_ai_assistant` | unique full name, no abbreviation |
+| Text domain | `inkline-connect-ai-assistant` | matches the slug |
+| CSS class names | `iaa-` (BEM-style) | `.iaa-dock`, `.iaa-assist__bar`, `.iaa-dock__send` |
+| CSS custom properties | `--iaa-` | declared only on `.iaa-assist, .iaa-dock` — never on `:root`, so they don't leak |
+| CSS keyframes | `iaa-` | `@keyframes iaa-send-nudge` |
+| HTML data attributes | `data-iaa-` | `data-iaa-dock`, `data-iaa-assist-bar`, `data-iaa-dock-dismiss` |
+| JS globals | `window.ICAIA` only | everything else lives inside a single IIFE |
+| JS localStorage keys | `icaia-` | `icaia-dock-dismissed` |
+| Chat-widget shadow style id | `iaa-widget-style` | scoped inside the chat widget's shadow root |
+
+PHP classes and constants are additionally guarded with `if ( ! class_exists() )` / `if ( ! defined() )` so even a misconfigured duplicate install can't trigger a fatal redefine.
+
 ## License
 
 GPL-2.0-or-later.

@@ -4,7 +4,7 @@ Tags: ai, assistant, chat, conversational, inkline connect, leadconnector
 Requires at least: 5.8
 Tested up to: 6.5
 Requires PHP: 7.4
-Stable tag: 0.1.7
+Stable tag: 0.1.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,13 @@ Yes — a small chip appears on hover. Clicking it dismisses the dock site-wide.
 Yes. The Elementor widget is optional — the shortcode covers every layout.
 
 == Changelog ==
+
+= 0.1.8 =
+* Tighten namespacing so the plugin can't collide with anything else on the host site:
+  - PHP constants and classes are now guarded with `defined()` / `class_exists()` so a duplicate install can't trigger a fatal redefine.
+  - CSS custom properties (`--iaa-brand`, `--iaa-font`, etc.) are scoped to `.iaa-assist, .iaa-dock` instead of `:root`, so they can no longer leak into or be overridden by host-site styles.
+  - The dock dismiss flag in localStorage now uses the `icaia-` prefix that matches the rest of the plugin's namespacing. The previous `iaa-dock-dismissed` key is migrated forward on first read so visitors who dismissed before the upgrade stay dismissed.
+  - Removed the generic `.iaa-icon` / `.iaa-icon--sparkles` classes from the bundled sparkles SVG partial; only consumer-supplied scoped classes (`.iaa-dock__icon-svg`, `.iaa-assist__icon-svg`, `.iaa-assist__eyebrow-glyph`) are used now.
 
 = 0.1.7 =
 * Replace the legacy blue chat-widget header (and other Inkline Connect default surfaces) with the neutral palette from the design prototype whenever a brand colour is set in plugin settings. Brand colour still drives the brand-coloured slots (header text, send bubble, active state, avatar border); structural surfaces (header background, message-pane background, received-message bubbles) get the matching neutrals. Leave the brand colour blank to skip the override and keep the chat widget on its Inkline Connect configuration.

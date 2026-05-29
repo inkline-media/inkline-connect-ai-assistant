@@ -19,6 +19,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+if ( ! class_exists( 'ICAIA_Updater' ) ) :
+
 class ICAIA_Updater {
 
 	/** @var string Absolute path to the main plugin file. */
@@ -261,3 +263,6 @@ class ICAIA_Updater {
 		return $source;
 	}
 }
+
+endif;
+
