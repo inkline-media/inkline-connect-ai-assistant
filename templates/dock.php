@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<div class="iaa-dock__shell">
 		<form class="iaa-dock__bar iaa-assist__bar" data-iaa-assist-bar>
 			<span class="iaa-dock__icon" aria-hidden="true">
-				<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2l1.7 5.3L19 9l-5.3 1.7L12 16l-1.7-5.3L5 9l5.3-1.7L12 2zm6 11l.9 2.6L21.5 16.5l-2.6.9L18 20l-.9-2.6L14.5 16.5l2.6-.9L18 13zM6 13l.7 1.9L8.6 15.6 6.7 16.3 6 18.3l-.7-1.9L3.4 15.6 5.3 14.9 6 13z"/></svg>
+				<i class="fa-solid fa-sparkles"></i>
 			</span>
 			<input
 				type="text"

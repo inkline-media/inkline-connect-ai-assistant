@@ -4,7 +4,7 @@ Tags: ai, assistant, chat, conversational, inkline connect, leadconnector
 Requires at least: 5.8
 Tested up to: 6.5
 Requires PHP: 7.4
-Stable tag: 0.1.3
+Stable tag: 0.1.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,9 @@ Yes — a small chip appears on hover. Clicking it dismisses the dock site-wide.
 Yes. The Elementor widget is optional — the shortcode covers every layout.
 
 == Changelog ==
+
+= 0.1.4 =
+* Use the Font Awesome `fa-sparkles` icon for the assistant's sparkle glyph (matches the design prototype) instead of a generic inline star SVG. Requires Font Awesome Pro to be loaded on the site (sparkles is a Pro icon). Size and vertical centring tuned to match the prototype.
 
 = 0.1.3 =
 * Fix: themes that styled all buttons (auto width, square border-radius, custom backgrounds) were squashing the assistant send button into a small rectangle instead of the brand-coloured circle. The CSS now uses two-class selectors and a defensive reset so theme rules cannot override the assistant or dock component shapes.

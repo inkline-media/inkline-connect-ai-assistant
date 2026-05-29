@@ -76,6 +76,7 @@ The plugin caches release lookups for 6 hours (and failed lookups for 1 hour, so
 - WordPress 5.8+ (for the Update URI integration)
 - PHP 7.4+
 - An Inkline Connect chat-widget embed
+- Font Awesome Pro loaded on the site (the sparkle glyph uses `fa-solid fa-sparkles`, a Pro-only icon)
 
 ## License
 
