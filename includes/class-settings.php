@@ -63,6 +63,15 @@ class ICAIA_Settings {
 	/**
 	 * Shipped defaults. Brand color and Inter typography reflect Inkline's
 	 * own brand — admins can override either in the settings page.
+	 *
+	 * Freeze-on-first-save contract: `sanitize()` starts from these
+	 * defaults and overlays the form input, so the option that gets
+	 * written contains *every* key at its effective value. Once a user
+	 * has clicked Save Changes, future updates that ship different
+	 * defaults here will not silently change that user's site — their
+	 * saved values keep winning via `wp_parse_args()` in `all()`. Each
+	 * settings row exposes a "Restore default" control if they ever
+	 * want to opt back into whatever this method currently returns.
 	 */
 	public static function defaults() {
 		return array(
@@ -231,6 +240,36 @@ class ICAIA_Settings {
 			ICAIA_VERSION,
 			true
 		);
+		// Per-field "Restore default" links read from this map. The
+		// values here are the *current shipped* defaults, not whatever
+		// the user has saved — that's the whole point of the button.
+		wp_localize_script(
+			'icaia-admin-settings',
+			'ICAIA_ADMIN',
+			array(
+				'defaults' => self::defaults(),
+			)
+		);
+	}
+
+	/**
+	 * Emit a tiny "Restore default" link next to a setting's description.
+	 *
+	 * The actual default value lives in the localized ICAIA_ADMIN.defaults
+	 * map on the JS side, so this PHP doesn't have to know it. Saving
+	 * remains a separate step — clicking just stages the change.
+	 *
+	 * @param string $key    The defaults key the button targets.
+	 * @param string $target jQuery selector for the form field.
+	 */
+	private function print_restore_link( $key, $target ) {
+		printf(
+			' <button type="button" class="button-link icaia-restore" data-key="%1$s" data-target="%2$s" title="%3$s">%4$s</button>',
+			esc_attr( $key ),
+			esc_attr( $target ),
+			esc_attr__( 'Reset this field to the default that ships with the plugin. Click Save Changes to keep it.', 'inkline-connect-ai-assistant' ),
+			esc_html__( '↺ Restore default', 'inkline-connect-ai-assistant' )
+		);
 	}
 
 	public function render_page() {
@@ -282,6 +321,7 @@ class ICAIA_Settings {
 						<td>
 							<label>
 								<input
+									id="icaia-enabled"
 									type="checkbox"
 									name="<?php echo esc_attr( ICAIA_OPTION ); ?>[enabled]"
 									value="1"
@@ -289,7 +329,10 @@ class ICAIA_Settings {
 								/>
 								<?php esc_html_e( 'Show the assistant on the front end', 'inkline-connect-ai-assistant' ); ?>
 							</label>
-							<p class="description"><?php esc_html_e( 'When off, the dock, every in-page widget instance (shortcode and Elementor), and the chat-widget embed are all suppressed. The shortcode renders nothing — no markup, no space. Your settings stay saved; flip this back on to bring everything back.', 'inkline-connect-ai-assistant' ); ?></p>
+							<p class="description">
+								<?php esc_html_e( 'When off, the dock, every in-page widget instance (shortcode and Elementor), and the chat-widget embed are all suppressed. The shortcode renders nothing — no markup, no space. Your settings stay saved; flip this back on to bring everything back.', 'inkline-connect-ai-assistant' ); ?>
+								<?php $this->print_restore_link( 'enabled', '#icaia-enabled' ); ?>
+							</p>
 						</td>
 					</tr>
 				</table>
@@ -332,7 +375,10 @@ class ICAIA_Settings {
 								class="icaia-color-field"
 								data-default-color=""
 							/>
-							<p class="description"><?php esc_html_e( 'Optional. When set, applied to the send button, focus ring, and accent details across the in-page widget, the dock, and the chat widget. Leave blank to leave the chat widget on the colors you configured in Inkline Connect (the in-page widget and dock then use a neutral default).', 'inkline-connect-ai-assistant' ); ?></p>
+							<p class="description">
+								<?php esc_html_e( 'Optional. When set, applied to the send button, focus ring, and accent details across the in-page widget, the dock, and the chat widget. Leave blank to leave the chat widget on the colors you configured in Inkline Connect (the in-page widget and dock then use a neutral default).', 'inkline-connect-ai-assistant' ); ?>
+								<?php $this->print_restore_link( 'brand_color', '#icaia-brand-color' ); ?>
+							</p>
 						</td>
 					</tr>
 					<tr>
@@ -348,7 +394,10 @@ class ICAIA_Settings {
 								class="icaia-color-field"
 								data-default-color=""
 							/>
-							<p class="description"><?php esc_html_e( 'Optional. Background of the chat widget title bar (where the "ASK …" eyebrow sits). Leave blank for the cream default (#FBFBF8). A subtly darker shade is auto-derived for the header bottom border.', 'inkline-connect-ai-assistant' ); ?></p>
+							<p class="description">
+								<?php esc_html_e( 'Optional. Background of the chat widget title bar (where the "ASK …" eyebrow sits). Leave blank for the cream default (#FBFBF8). A subtly darker shade is auto-derived for the header bottom border.', 'inkline-connect-ai-assistant' ); ?>
+								<?php $this->print_restore_link( 'chat_header_color', '#icaia-chat-header-color' ); ?>
+							</p>
 						</td>
 					</tr>
 					<tr>
@@ -364,7 +413,10 @@ class ICAIA_Settings {
 								class="icaia-color-field"
 								data-default-color=""
 							/>
-							<p class="description"><?php esc_html_e( 'Optional. Background of incoming (assistant) message bubbles. Leave blank for the cream default (#F3F0E9).', 'inkline-connect-ai-assistant' ); ?></p>
+							<p class="description">
+								<?php esc_html_e( 'Optional. Background of incoming (assistant) message bubbles. Leave blank for the cream default (#F3F0E9).', 'inkline-connect-ai-assistant' ); ?>
+								<?php $this->print_restore_link( 'chat_received_color', '#icaia-chat-received-color' ); ?>
+							</p>
 						</td>
 					</tr>
 						<tr>
@@ -469,6 +521,7 @@ class ICAIA_Settings {
 						<td>
 							<label>
 								<input
+									id="icaia-dock-enabled"
 									type="checkbox"
 									name="<?php echo esc_attr( ICAIA_OPTION ); ?>[dock_enabled]"
 									value="1"
@@ -476,7 +529,10 @@ class ICAIA_Settings {
 								/>
 								<?php esc_html_e( 'Show the site-wide docked bar', 'inkline-connect-ai-assistant' ); ?>
 							</label>
-							<p class="description"><?php esc_html_e( 'Fixed bottom-of-viewport bar that follows visitors as they scroll. Hides automatically on pages where the in-page widget is currently in view. Visitors can dismiss it; opening the chat widget brings it back.', 'inkline-connect-ai-assistant' ); ?></p>
+							<p class="description">
+								<?php esc_html_e( 'Fixed bottom-of-viewport bar that follows visitors as they scroll. Hides automatically on pages where the in-page widget is currently in view. Visitors can dismiss it; opening the chat widget brings it back.', 'inkline-connect-ai-assistant' ); ?>
+								<?php $this->print_restore_link( 'dock_enabled', '#icaia-dock-enabled' ); ?>
+							</p>
 						</td>
 					</tr>
 					<tr>
@@ -491,7 +547,10 @@ class ICAIA_Settings {
 								cols="80"
 								class="large-text"
 							><?php echo esc_textarea( $s['suggestions'] ); ?></textarea>
-							<p class="description"><?php esc_html_e( 'One prompt per line. Used as the rotating "Try" chips and the animated placeholder. Keep them in your visitor\'s voice — questions or first-person statements work best.', 'inkline-connect-ai-assistant' ); ?></p>
+							<p class="description">
+								<?php esc_html_e( 'One prompt per line. Used as the rotating "Try" chips and the animated placeholder. Keep them in your visitor\'s voice — questions or first-person statements work best.', 'inkline-connect-ai-assistant' ); ?>
+								<?php $this->print_restore_link( 'suggestions', '#icaia-suggestions' ); ?>
+							</p>
 						</td>
 					</tr>
 				</table>

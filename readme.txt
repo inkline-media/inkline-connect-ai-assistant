@@ -4,7 +4,7 @@ Tags: ai, assistant, chat, conversational, inkline connect, leadconnector
 Requires at least: 5.8
 Tested up to: 6.5
 Requires PHP: 7.4
-Stable tag: 0.1.13
+Stable tag: 0.1.14
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,10 @@ Yes — a small chip appears on hover. Clicking it dismisses the dock site-wide.
 Yes. The Elementor widget is optional — the shortcode covers every layout.
 
 == Changelog ==
+
+= 0.1.14 =
+* Each setting now has a small "↺ Restore default" link next to its description (master switch, brand colour, chat header background, received bubble, docked assistant, starter prompts — the font block already had its own restore button). Clicking stages the shipped default; the admin still has to click Save Changes to keep it.
+* Make the freeze-on-first-save contract explicit in code and docs: once an admin has clicked Save Changes, the full settings payload (every key, including any field they left at its default) is persisted, so future plugin updates that ship different defaults won't silently change their site. Restore-default buttons are how they opt back into the newest shipped defaults if they want them.
 
 = 0.1.13 =
 * Expose the chat-widget surface colours as admin settings. Two new optional colour pickers — **Chat header background** and **Received message bubble** — sit alongside the brand colour. Leave them blank to keep the cream prototype defaults (#FBFBF8 header, #F3F0E9 bubbles). When the header colour is set, the matching header bottom border is auto-derived as a subtly darker shade.
