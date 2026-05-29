@@ -138,8 +138,14 @@
 	}
 
 	// Push brand colour + matching styling into the widget's shadow DOM.
+	// Brand-coloured slots take the configured plugin colour; structural
+	// slots (header background, message bubbles, page background) take
+	// the neutral palette used by the design prototype, so the assistant
+	// reads as a cohesive surface instead of inheriting the legacy blue
+	// header that older Inkline Connect installs ship with.
 	function brandTokens() {
 		return {
+			// Brand-coloured slots.
 			'--chat-widget-active-color': BRAND,
 			'--chat-widget-bubble-color': BRAND,
 			'--chat-widget-primary-color': BRAND,
@@ -148,6 +154,16 @@
 			'--chat-widget-header-message-text-color': BRAND,
 			'--chat-widget-sender-message-color': BRAND,
 			'--chat-widget-avatar-border-color': BRAND,
+			// Neutral surface slots — match the prototype.
+			'--chat-widget-background-color': '#FFFFFF',
+			'--chat-widget-header-color': '#FBFBF8',
+			'--chat-widget-header-darken-color': '#F3F0E9',
+			'--chat-widget-welcome-message-text-color': '#262420',
+			'--chat-widget-sender-message-text-color': '#FFFFFF',
+			'--chat-widget-received-message-color': '#F3F0E9',
+			'--chat-widget-received-message-text-color': '#262420',
+			'--chat-widget-avatar-background-color': '#FFFFFF',
+			// Typography.
 			'--chat-widget-font-family': FONT_STACK,
 		};
 	}

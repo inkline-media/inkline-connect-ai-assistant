@@ -3,7 +3,7 @@
  * Plugin Name:       AI Website Assistant for Inkline Connect
  * Plugin URI:        https://github.com/inkline-media/inkline-connect-ai-assistant
  * Description:       Drops an Inkline Connect-powered AI assistant into your site: an in-page widget (shortcode + Elementor), a site-wide docked bar, and matching styling for the connected chat widget. Activates once you paste your Inkline Connect chat-widget embed code in the settings.
- * Version:           0.1.6
+ * Version:           0.1.7
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            Inkline Media
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'ICAIA_VERSION', '0.1.6' );
+define( 'ICAIA_VERSION', '0.1.7' );
 define( 'ICAIA_FILE', __FILE__ );
 define( 'ICAIA_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ICAIA_URL', plugin_dir_url( __FILE__ ) );

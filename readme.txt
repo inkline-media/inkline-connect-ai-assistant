@@ -4,7 +4,7 @@ Tags: ai, assistant, chat, conversational, inkline connect, leadconnector
 Requires at least: 5.8
 Tested up to: 6.5
 Requires PHP: 7.4
-Stable tag: 0.1.6
+Stable tag: 0.1.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,9 @@ Yes — a small chip appears on hover. Clicking it dismisses the dock site-wide.
 Yes. The Elementor widget is optional — the shortcode covers every layout.
 
 == Changelog ==
+
+= 0.1.7 =
+* Replace the legacy blue chat-widget header (and other Inkline Connect default surfaces) with the neutral palette from the design prototype whenever a brand colour is set in plugin settings. Brand colour still drives the brand-coloured slots (header text, send bubble, active state, avatar border); structural surfaces (header background, message-pane background, received-message bubbles) get the matching neutrals. Leave the brand colour blank to skip the override and keep the chat widget on its Inkline Connect configuration.
 
 = 0.1.6 =
 * Bundle the Font Awesome Pro 7 `sparkles` glyph as an inline SVG so the assistant renders correctly on sites that don't have Font Awesome Pro loaded. The plugin no longer requires Font Awesome on the host site.
