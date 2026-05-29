@@ -4,7 +4,7 @@ Tags: ai, assistant, chat, conversational, inkline connect, leadconnector
 Requires at least: 5.8
 Tested up to: 6.5
 Requires PHP: 7.4
-Stable tag: 0.1.10
+Stable tag: 0.1.11
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,9 @@ Yes — a small chip appears on hover. Clicking it dismisses the dock site-wide.
 Yes. The Elementor widget is optional — the shortcode covers every layout.
 
 == Changelog ==
+
+= 0.1.11 =
+* Replace the single font-family input with a proper Google Fonts picker: 1,900+ families bundled with the plugin, type-to-filter autocomplete, and a "Load from Google Fonts" toggle so admins can leave loading to their theme if it already ships the font. Switch the radio to "Custom CSS font-family" to paste a self-hosted font stack instead — the plugin won't load anything from Google in that mode.
 
 = 0.1.10 =
 * Add a "Settings" action link on the plugin's row in Plugins → Installed Plugins for one-click access to the settings page.

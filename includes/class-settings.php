@@ -66,14 +66,71 @@ class ICAIA_Settings {
 	 */
 	public static function defaults() {
 		return array(
-			'enabled'      => 1,
-			'chat_embed'   => '',
-			'brand_color'  => '',
-			'font_stack'   => "'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif",
-			'load_inter'   => 1,
-			'dock_enabled' => 1,
+			'enabled'            => 1,
+			'chat_embed'         => '',
+			'brand_color'        => '',
+			// Font mode: 'google' or 'custom'. Google pairs with
+			// font_google_family + font_google_load; custom pairs with
+			// font_stack (raw CSS font-family value).
+			'font_mode'          => 'google',
+			'font_google_family' => 'Inter',
+			'font_google_load'   => 1,
+			'font_stack'         => "'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+			'dock_enabled'       => 1,
 			'suggestions' => "How do I cut our martech costs?\nHow do I get our team AI-ready?\nWhat does an AI readiness assessment cover?\nCan you audit my Marketo instance?\nWhich service fits a product launch?\nHow do I prove marketing ROI to the board?\nI need to rebuild our revenue engine.\nHelp me untangle our martech stack.",
 		);
+	}
+
+	/**
+	 * Resolve the CSS font-family value to apply on the front end,
+	 * based on the saved settings. Also returns the Google Fonts
+	 * stylesheet URL when one should be loaded.
+	 *
+	 * @return array{ family:string, gfont_url:string }
+	 */
+	public static function resolve_font() {
+		$s    = self::all();
+		$mode = ( 'custom' === ( $s['font_mode'] ?? 'google' ) ) ? 'custom' : 'google';
+		if ( 'custom' === $mode ) {
+			$family = trim( (string) $s['font_stack'] );
+			if ( '' === $family ) {
+				$family = self::defaults()['font_stack'];
+			}
+			return array( 'family' => $family, 'gfont_url' => '' );
+		}
+		$name = trim( (string) ( $s['font_google_family'] ?? 'Inter' ) );
+		if ( '' === $name ) {
+			$name = 'Inter';
+		}
+		$family = "'" . $name . "', sans-serif";
+		$gfont_url = '';
+		if ( ! empty( $s['font_google_load'] ) ) {
+			$gfont_url = 'https://fonts.googleapis.com/css2?family='
+				. rawurlencode( str_replace( ' ', '+', $name ) )
+				. ':wght@400;500;600;700&display=swap';
+		}
+		return array( 'family' => $family, 'gfont_url' => $gfont_url );
+	}
+
+	/**
+	 * Lazy-load the bundled Google Fonts catalog.
+	 *
+	 * @return array<int, array{n:string, c?:string}>
+	 */
+	public static function google_fonts() {
+		static $cache = null;
+		if ( null !== $cache ) {
+			return $cache;
+		}
+		$path = ICAIA_DIR . 'assets/data/google-fonts.json';
+		if ( ! is_readable( $path ) ) {
+			$cache = array();
+			return $cache;
+		}
+		$json   = file_get_contents( $path );
+		$parsed = json_decode( $json, true );
+		$cache  = is_array( $parsed ) ? $parsed : array();
+		return $cache;
 	}
 
 	public function register_settings() {
@@ -115,8 +172,18 @@ class ICAIA_Settings {
 			$out['font_stack'] = sanitize_text_field( $input['font_stack'] );
 		}
 
-		$out['load_inter']   = ! empty( $input['load_inter'] ) ? 1 : 0;
-		$out['dock_enabled'] = ! empty( $input['dock_enabled'] ) ? 1 : 0;
+		// Font source mode and its companion fields.
+		$out['font_mode'] = ( isset( $input['font_mode'] ) && 'custom' === $input['font_mode'] )
+			? 'custom'
+			: 'google';
+
+		if ( isset( $input['font_google_family'] ) ) {
+			$raw = sanitize_text_field( $input['font_google_family'] );
+			$out['font_google_family'] = ( '' === $raw ) ? $defaults['font_google_family'] : $raw;
+		}
+
+		$out['font_google_load'] = ! empty( $input['font_google_load'] ) ? 1 : 0;
+		$out['dock_enabled']     = ! empty( $input['dock_enabled'] ) ? 1 : 0;
 
 		if ( isset( $input['suggestions'] ) ) {
 			$out['suggestions'] = sanitize_textarea_field( $input['suggestions'] );
@@ -251,32 +318,88 @@ class ICAIA_Settings {
 							<p class="description"><?php esc_html_e( 'Optional. When set, applied to the send button, focus ring, and accent details across the in-page widget, the dock, and the chat widget. Leave blank to leave the chat widget on the colors you configured in Inkline Connect (the in-page widget and dock then use a neutral default).', 'inkline-connect-ai-assistant' ); ?></p>
 						</td>
 					</tr>
-					<tr>
-						<th scope="row">
-							<label for="icaia-font-stack"><?php esc_html_e( 'Font family', 'inkline-connect-ai-assistant' ); ?></label>
-						</th>
-						<td>
-							<input
-								id="icaia-font-stack"
-								type="text"
-								name="<?php echo esc_attr( ICAIA_OPTION ); ?>[font_stack]"
-								value="<?php echo esc_attr( $s['font_stack'] ); ?>"
-								class="regular-text"
-							/>
-							<p>
-								<label>
-									<input
-										type="checkbox"
-										name="<?php echo esc_attr( ICAIA_OPTION ); ?>[load_inter]"
-										value="1"
-										<?php checked( ! empty( $s['load_inter'] ) ); ?>
-									/>
-									<?php esc_html_e( 'Load Inter from Google Fonts', 'inkline-connect-ai-assistant' ); ?>
-								</label>
-							</p>
-							<p class="description"><?php esc_html_e( 'CSS font-family value used by both the in-page widget and the dock. Leave Inter selected for the Inkline default; uncheck Google Fonts if your theme already loads it (or you prefer a system stack).', 'inkline-connect-ai-assistant' ); ?></p>
-						</td>
-					</tr>
+						<tr>
+							<th scope="row"><?php esc_html_e( 'Font source', 'inkline-connect-ai-assistant' ); ?></th>
+							<td>
+								<fieldset>
+									<label style="display:block;margin-bottom:6px">
+										<input
+											type="radio"
+											name="<?php echo esc_attr( ICAIA_OPTION ); ?>[font_mode]"
+											value="google"
+											class="icaia-font-mode"
+											data-target="google"
+											<?php checked( 'custom' !== $s['font_mode'] ); ?>
+										/>
+										<?php esc_html_e( 'Google Font (search 1,900+ fonts)', 'inkline-connect-ai-assistant' ); ?>
+									</label>
+									<label style="display:block">
+										<input
+											type="radio"
+											name="<?php echo esc_attr( ICAIA_OPTION ); ?>[font_mode]"
+											value="custom"
+											class="icaia-font-mode"
+											data-target="custom"
+											<?php checked( 'custom' === $s['font_mode'] ); ?>
+										/>
+										<?php esc_html_e( 'Custom CSS font-family (use a font your theme already loads)', 'inkline-connect-ai-assistant' ); ?>
+									</label>
+								</fieldset>
+							</td>
+						</tr>
+						<tr class="icaia-font-row icaia-font-row--google">
+							<th scope="row">
+								<label for="icaia-font-google-family"><?php esc_html_e( 'Google Font name', 'inkline-connect-ai-assistant' ); ?></label>
+							</th>
+							<td>
+								<input
+									id="icaia-font-google-family"
+									type="text"
+									list="icaia-google-fonts-list"
+									name="<?php echo esc_attr( ICAIA_OPTION ); ?>[font_google_family]"
+									value="<?php echo esc_attr( $s['font_google_family'] ); ?>"
+									class="regular-text"
+									autocomplete="off"
+									spellcheck="false"
+									placeholder="<?php esc_attr_e( 'Inter', 'inkline-connect-ai-assistant' ); ?>"
+								/>
+								<datalist id="icaia-google-fonts-list">
+									<?php foreach ( self::google_fonts() as $f ) : ?>
+										<option value="<?php echo esc_attr( $f['n'] ); ?>"></option>
+									<?php endforeach; ?>
+								</datalist>
+								<p class="description"><?php esc_html_e( 'Type to filter the list. The plugin builds the CSS font-family as "<chosen-font>", sans-serif.', 'inkline-connect-ai-assistant' ); ?></p>
+								<p>
+									<label>
+										<input
+											type="checkbox"
+											name="<?php echo esc_attr( ICAIA_OPTION ); ?>[font_google_load]"
+											value="1"
+											<?php checked( ! empty( $s['font_google_load'] ) ); ?>
+										/>
+										<?php esc_html_e( 'Load the font from Google Fonts on the front end', 'inkline-connect-ai-assistant' ); ?>
+									</label>
+								</p>
+								<p class="description"><?php esc_html_e( 'Uncheck if your theme already loads this font, or if you self-host it.', 'inkline-connect-ai-assistant' ); ?></p>
+							</td>
+						</tr>
+						<tr class="icaia-font-row icaia-font-row--custom">
+							<th scope="row">
+								<label for="icaia-font-stack"><?php esc_html_e( 'CSS font-family', 'inkline-connect-ai-assistant' ); ?></label>
+							</th>
+							<td>
+								<input
+									id="icaia-font-stack"
+									type="text"
+									name="<?php echo esc_attr( ICAIA_OPTION ); ?>[font_stack]"
+									value="<?php echo esc_attr( $s['font_stack'] ); ?>"
+									class="large-text code"
+									spellcheck="false"
+									placeholder="'My Font', 'Helvetica Neue', Helvetica, Arial, sans-serif"
+								/>
+								<p class="description"><?php esc_html_e( 'Paste a complete CSS font-family value, e.g. for a self-hosted font already loaded by your theme. The plugin will not load anything from Google Fonts in this mode.', 'inkline-connect-ai-assistant' ); ?></p>
+							</td>
+						</tr>
 				</table>
 
 				<h2 class="title"><?php esc_html_e( 'Behaviour', 'inkline-connect-ai-assistant' ); ?></h2>

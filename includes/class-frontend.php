@@ -41,13 +41,9 @@ class ICAIA_Frontend {
 		}
 		$s = ICAIA_Settings::all();
 
-		if ( ! empty( $s['load_inter'] ) ) {
-			wp_enqueue_style(
-				'icaia-inter',
-				'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
-				array(),
-				null
-			);
+		$font = ICAIA_Settings::resolve_font();
+		if ( '' !== $font['gfont_url'] ) {
+			wp_enqueue_style( 'icaia-gfont', $font['gfont_url'], array(), null );
 		}
 
 		wp_enqueue_style(
@@ -78,7 +74,7 @@ class ICAIA_Frontend {
 				// the chat widget's shadow DOM, so the widget keeps the
 				// colors configured in Inkline Connect.
 				'brand'       => $brand,
-				'fontStack'   => $s['font_stack'],
+				'fontStack'   => $font['family'],
 				'suggestions' => array_values( $suggestions ),
 				'dock'        => ! empty( $s['dock_enabled'] ),
 			)
@@ -92,7 +88,7 @@ class ICAIA_Frontend {
 		// leak into the host site's CSS.
 		$inline = sprintf(
 			'.iaa-assist,.iaa-dock{--iaa-font:%s;}',
-			esc_attr( $s['font_stack'] )
+			esc_attr( $font['family'] )
 		);
 		if ( '' !== $brand ) {
 			$inline .= sprintf(
