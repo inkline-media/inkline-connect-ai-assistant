@@ -4,7 +4,7 @@ Tags: ai, assistant, chat, conversational, inkline connect, leadconnector
 Requires at least: 5.8
 Tested up to: 6.5
 Requires PHP: 7.4
-Stable tag: 0.1.17
+Stable tag: 0.1.18
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,9 @@ Yes — a small chip appears on hover. Clicking it dismisses the dock site-wide.
 Yes. The Elementor widget is optional — the shortcode covers every layout.
 
 == Changelog ==
+
+= 0.1.18 =
+* Fix: GitHub updates never actually appeared on Dashboard → Updates. The `update_plugins_github.com` filter response was missing the `version` key the Update URI API requires (we only sent the wp.org-style `new_version`), so core couldn't tell the release was newer and filed the plugin under "no update". Both keys are now sent, plus `id`/`autoupdate` per the documented contract.
 
 = 0.1.17 =
 * Fix: installing any *other* plugin or theme while this plugin was active could fail with "Destination folder already exists" pointing at this plugin's folder. The GitHub-updater's folder-rename hook (`upgrader_source_selection`) ran on every install because fresh installs carry no `plugin` key in `$hook_extra`; it now only renames when the upgrade is positively identified as this plugin's own.

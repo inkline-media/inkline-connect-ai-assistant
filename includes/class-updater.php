@@ -116,16 +116,25 @@ class ICAIA_Updater {
 			}
 		}
 
+		// The update_plugins_{$hostname} filter contract (WP 5.8 Update URI
+		// API) keys the new version as 'version' — without it core cannot
+		// tell the release is newer and files us under no_update, so the
+		// update never shows. 'new_version' is kept for the wp.org-shaped
+		// consumers (plugin row UI, WP-CLI).
 		return array(
+			'id'           => "https://github.com/{$this->repo}",
 			'slug'         => $this->slug,
 			'plugin'       => $this->basename,
+			'version'      => $latest,
 			'new_version'  => $latest,
 			'url'          => isset( $release['html_url'] ) ? $release['html_url'] : "https://github.com/{$this->repo}",
 			'package'      => $package,
 			'icons'        => array(),
 			'banners'      => array(),
+			'banners_rtl'  => array(),
 			'tested'       => get_bloginfo( 'version' ),
 			'requires_php' => '7.4',
+			'autoupdate'   => true,
 		);
 	}
 
