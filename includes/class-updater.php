@@ -246,9 +246,11 @@ class ICAIA_Updater {
 		if ( ! is_string( $source ) ) {
 			return $source;
 		}
-		// Only act on this plugin's upgrade.
+		// Only act on this plugin's own upgrade. Fresh installs of other
+		// plugins/themes fire this filter with no 'plugin' key, so a
+		// missing key must mean "not ours" — never rename those.
 		$plugin = isset( $hook_extra['plugin'] ) ? $hook_extra['plugin'] : '';
-		if ( $plugin && $plugin !== $this->basename ) {
+		if ( $plugin !== $this->basename ) {
 			return $source;
 		}
 		$basename = trailingslashit( $source );
